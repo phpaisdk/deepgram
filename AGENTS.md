@@ -8,10 +8,11 @@ Official Deepgram provider for the PHP AI SDK. Part of the framework-agnostic [P
 use AiSdk\Content;
 use AiSdk\Deepgram;
 use AiSdk\Generate;
+use AiSdk\LocalFile;
 
 Deepgram::create(['apiKey' => '...']); // optional: environment variables below are read automatically
 
-$result = Generate::transcription(Content::audio('/path/to/audio.mp3'))
+$result = Generate::transcription(Content::audio(LocalFile::at('/path/to/audio.mp3')))
     ->model(Deepgram::model('model-id'))
     ->run();
 
