@@ -2,7 +2,7 @@
 
 Notable changes to `aisdk/deepgram`. Release notes are also published at https://github.com/phpaisdk/deepgram/releases.
 
-## Unreleased (v0.10.1)
+## v0.10.1 — 2026-10-29
 
 - Answers without a transcript raise `InvalidResponseException`.
 - Raise SDK exceptions instead of native PHP ones.
