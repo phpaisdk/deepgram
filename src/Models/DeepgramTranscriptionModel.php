@@ -8,6 +8,7 @@ use AiSdk\ContentSource;
 use AiSdk\Contracts\BaseModel;
 use AiSdk\Contracts\TranscriptionModelInterface;
 use AiSdk\Deepgram\DeepgramOptions;
+use AiSdk\Exceptions\InvalidResponseException;
 use AiSdk\Generate;
 use AiSdk\Requests\TranscriptionRequest;
 use AiSdk\Responses\TranscriptionResponse;
@@ -41,7 +42,7 @@ final class DeepgramTranscriptionModel extends BaseModel implements Transcriptio
         } else {
             $bytes = base64_decode((string) $request->audio->base64Data(), true);
             if ($bytes === false) {
-                throw new \RuntimeException('Deepgram audio input could not be encoded.');
+                throw new InvalidResponseException('Deepgram audio input could not be encoded.');
             }
             $http = $sdk->requestFactory->createRequest('POST', $url)
                 ->withBody($sdk->streamFactory->createStream($bytes))
@@ -52,7 +53,7 @@ final class DeepgramTranscriptionModel extends BaseModel implements Transcriptio
             $response = $this->runner($this->options->sdk)->sendRequest($http, $this->provider());
             $payload = json_decode((string) $response->getBody(), true);
             if (! is_array($payload)) {
-                throw new \RuntimeException('Deepgram returned an invalid transcription response.');
+                throw new InvalidResponseException('Deepgram returned an invalid transcription response.');
             }
         }
 
