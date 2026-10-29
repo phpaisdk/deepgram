@@ -32,3 +32,20 @@ it('uses Deepgram prerecorded listen with token authentication', function (): vo
     $result = Generate::transcription()->model(Deepgram::model('nova-3'))->audio(Content::audio('https://example.com/audio.mp3'))->run();
     expect($result->output->text)->toBe('Hello world')->and((string) $client->request?->getUri())->toBe('https://api.deepgram.com/v1/listen?model=nova-3')->and($client->request?->getHeaderLine('Authorization'))->toBe('Token deepgram-test');
 });
+
+it('rejects a Deepgram answer without a transcript', function (string $body): void {
+    $client = new class ($body) implements ClientInterface {
+        public function __construct(private readonly string $body) {}
+
+        public function sendRequest(RequestInterface $request): ResponseInterface
+        {
+            return new Response(200, ['Content-Type' => 'application/json'], $this->body);
+        }
+    };
+    $factory = new Psr17Factory();
+    Generate::configure(new Sdk($client, $factory, $factory));
+    Deepgram::create(['apiKey' => 'deepgram-test']);
+
+    expect(fn() => Generate::transcription()->model(Deepgram::model('nova-3'))->audio(Content::audio('https://example.com/audio.mp3'))->run())
+        ->toThrow(AiSdk\Exceptions\InvalidResponseException::class);
+})->with(['{}', '[1]', '{"error":"quota"}', '{"results":{"channels":[]}}']);

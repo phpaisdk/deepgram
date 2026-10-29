@@ -57,7 +57,10 @@ final class DeepgramTranscriptionModel extends BaseModel implements Transcriptio
             }
         }
 
-        $alternative = $payload['results']['channels'][0]['alternatives'][0] ?? [];
+        $alternative = $payload['results']['channels'][0]['alternatives'][0] ?? null;
+        if (! is_array($alternative) || ! is_string($alternative['transcript'] ?? null)) {
+            throw new InvalidResponseException('Deepgram returned a response without a transcript.');
+        }
         $segments = [];
         foreach ((array) ($alternative['words'] ?? []) as $word) {
             if (is_array($word)) {
