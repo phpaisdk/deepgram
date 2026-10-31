@@ -2,6 +2,10 @@
 
 Notable changes to `aisdk/deepgram`. Release notes are also published at https://github.com/phpaisdk/deepgram/releases.
 
+## v0.11.0 — 2026-10-31
+
+- Requires `aisdk/core ^0.11.0`. Upgrade SDK packages together; no other changes in this package.
+
 ## v0.10.1 — 2026-10-29
 
 - Answers without a transcript raise `InvalidResponseException`.
